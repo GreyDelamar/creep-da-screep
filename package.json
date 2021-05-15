@@ -1,0 +1,23 @@
+{
+  "name": "creep-da-screep",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/screeps": "^3.2.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GreyDelamar/creep-da-screep.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GreyDelamar/creep-da-screep/issues"
+  },
+  "homepage": "https://github.com/GreyDelamar/creep-da-screep#readme"
+}

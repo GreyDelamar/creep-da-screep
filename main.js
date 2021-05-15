@@ -1,9 +1,7 @@
 
-var roleHarvester = require('role.harvester');
 const creepHarvester = require('creep.role.harvester')
 const creepBuilder = require('creep.role.builder')
 var roleUpgrader = require('role.upgrader');
-var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
 var spawner = require('spawner');
 var garbageCollector = require('garbageCollector');

@@ -83,13 +83,12 @@ module.exports = class creep {
         filter: (structure) => {
           return (
             structure.structureType == STRUCTURE_CONTAINER &&
-            structure.store.getCapacity(resource) > 0
+            structure.store.getUsedCapacity(resource) > 0
           );
         },
       });
 
     if (!target) {
-      this.harvest();
       return "no storage";
     }
 
@@ -106,26 +105,30 @@ module.exports = class creep {
   drop() {}
 
   store() {
-    const moreImportantTarget = this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: (structure) => {
-        return (
-          (structure.structureType == STRUCTURE_EXTENSION ||
-            structure.structureType == STRUCTURE_SPAWN ) &&
-          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-        );
-      },
-    });
+    const moreImportantTarget = this.creep.pos.findClosestByRange(
+      FIND_STRUCTURES,
+      {
+        filter: (structure) => {
+          return (
+            (structure.structureType == STRUCTURE_EXTENSION ||
+              structure.structureType == STRUCTURE_SPAWN) &&
+            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+          );
+        },
+      }
+    );
 
-    const target = moreImportantTarget || this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: (structure) => {
-        return (
-          (structure.structureType == STRUCTURE_TOWER ||
-            structure.structureType == STRUCTURE_CONTAINER ) &&
-          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-        );
-      },
-    });
-
+    const target =
+      moreImportantTarget ||
+      this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter: (structure) => {
+          return (
+            (structure.structureType == STRUCTURE_TOWER ||
+              structure.structureType == STRUCTURE_CONTAINER) &&
+            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+          );
+        },
+      });
 
     if (!target) return "full storage";
 

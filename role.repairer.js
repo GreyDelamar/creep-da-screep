@@ -1,6 +1,8 @@
 var roleRepairer = {
   /** @param {Creep} creep **/
   run: function (creep) {
+
+    // console.log(creep.memory.task)
     if (
       creep.memory.task !== "grab" &&
       creep.memory.task !== "build" &&
@@ -16,9 +18,7 @@ var roleRepairer = {
         return;
       }
 
-      var targets =
-        creep.memory.target ||
-        creep.room.find(FIND_STRUCTURES, {
+      var targets = creep.room.find(FIND_STRUCTURES, {
           filter: (object) => object.hits < object.hitsMax,
         });
 
@@ -81,9 +81,7 @@ var roleRepairer = {
         return;
       }
 
-      var target =
-        creep.memory.target ||
-        creep.pos.findClosestByRange(FIND_STRUCTURES, {
+      var target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
           filter: (structure) => {
             return (
               structure.structureType == STRUCTURE_CONTAINER &&

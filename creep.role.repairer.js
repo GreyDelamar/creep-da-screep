@@ -8,7 +8,7 @@ module.exports = class RoleRepairer extends Creep {
   run() {
     if (!this.creep.memory.isFull) {
       if (this.grab() === "no storage") {
-        this.harvest();
+        this.break();
       }
 
       if (
@@ -17,7 +17,7 @@ module.exports = class RoleRepairer extends Creep {
         this.creep.memory.isFull = true;
       }
     } else {
-      if (this.transfer(STRUCTURE_TOWER) ==="full storage") {
+      if (this.transfer(STRUCTURE_TOWER) === "full storage") {
         if (this.repair() === "nothing to repair") {
           this.upgrade();
         }

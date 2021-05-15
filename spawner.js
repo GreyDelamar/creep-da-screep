@@ -9,13 +9,13 @@ var spawner = {
 
     if (logCounts) console.log(JSON.stringify(counts, null, 2));
     // console.log(
-    //   spawner.bodyCost([WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE])
+    //   spawner.bodyCost([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE])
     // );
 
     // console.log(typeof counts.harvester.count, counts.upgrader.count < 1);
 
-    if (counts.harvester.count < 2) {
-      spawner.createCreep("harvester", counts.harvester.highNum, [
+    if (counts.harvester.count < 3) {
+      spawner.createCreep("harvester", [
         WORK,
         WORK,
         WORK,
@@ -26,24 +26,13 @@ var spawner = {
         MOVE,
       ]);
     } else if (counts.testDummy.count < 0) {
-      spawner.createCreep("testDummy", counts.testDummy.highNum, [
+      spawner.createCreep("testDummy", [
         WORK,
         CARRY,
         MOVE,
       ]);
-    } else if (counts.upgrader.count < 3) {
-      spawner.createCreep("upgrader", counts.upgrader.highNum, [
-        WORK,
-        WORK,
-        WORK,
-        CARRY,
-        CARRY,
-        MOVE,
-        MOVE,
-        MOVE,
-      ]);
-    } else if (counts.builder.count < 2) {
-      spawner.createCreep("builder", counts.builder.highNum, [
+    } else if (counts.upgrader.count < 2) {
+      spawner.createCreep("upgrader", [
         WORK,
         WORK,
         WORK,
@@ -53,11 +42,23 @@ var spawner = {
         MOVE,
         MOVE,
       ]);
-    } else if (counts.repairer.count < 1) {
-      spawner.createCreep("repairer", counts.builder.highNum, [
+    }
+    if (counts.repairer.count < 1) {
+      spawner.createCreep("repairer", [
         WORK,
         WORK,
         CARRY,
+        CARRY,
+        CARRY,
+        MOVE,
+        MOVE,
+        MOVE,
+      ]);
+    } else if (counts.builder.count < 1) {
+      spawner.createCreep("builder", [
+        WORK,
+        WORK,
+        WORK,
         CARRY,
         CARRY,
         MOVE,
@@ -66,23 +67,18 @@ var spawner = {
       ]);
     }
   },
-  createCreep(role, highNum, bodyParts) {
-    // console.log(role, highNum, bodyParts);
-    Game.spawns["MainSpawn"].spawnCreep(
-      bodyParts,
-      role + (parseFloat(highNum) + 1),
-      {
-        memory: { role, isFull: false, break: false },
-      }
-    );
+  createCreep(role, bodyParts) {
+    Game.spawns["MainSpawn"].spawnCreep(bodyParts, `${role}_${Game.time}`, {
+      memory: { role, isFull: false, break: false },
+    });
   },
   getCreepCounts() {
     const counts = {
-      harvester: { count: 0, highNum: 0 },
-      builder: { count: 0, highNum: 0 },
-      upgrader: { count: 0, highNum: 0 },
-      repairer: { count: 0, highNum: 0 },
-      testDummy: { count: 0, highNum: 0 },
+      harvester: { count: 0 },
+      builder: { count: 0 },
+      upgrader: { count: 0 },
+      repairer: { count: 0 },
+      testDummy: { count: 0 },
     };
     const creepArr = Object.keys(Game.creeps);
 
@@ -90,15 +86,8 @@ var spawner = {
       const creep = Game.creeps[creepArr[i]];
 
       let countTarget = counts[creep.memory.role];
-      let info = creep.name.split(/(\d)/);
 
-      if (countTarget) {
-        if (creep.ticksToLive > 30) countTarget.count++;
-
-        if (parseFloat(info[1]) > countTarget.highNum) {
-          countTarget.highNum = parseFloat(info[1]);
-        }
-      }
+      if (countTarget && creep.ticksToLive > 30) countTarget.count++;
     }
 
     return counts;

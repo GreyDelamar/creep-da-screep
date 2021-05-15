@@ -18,15 +18,15 @@ module.exports = class creep {
   }
 
   build(forceTarget) {
-    if (this.creep.memory.task !== "build") {
-      this.creep.memory.task = "build";
-      this.creep.say("🚧 Build");
-    }
-
     const target =
       forceTarget || this.creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
 
     if (!target) return "nothing to build";
+
+    if (this.creep.memory.task !== "build") {
+      this.creep.memory.task = "build";
+      this.creep.say("🚧 Build");
+    }
 
     if (this.creep.build(target) == ERR_NOT_IN_RANGE) {
       this.creep.moveTo(target);
@@ -34,7 +34,7 @@ module.exports = class creep {
   }
 
   upgrade() {
-    if (!this.creep.memory.task !== "upgrade") {
+    if (this.creep.memory.task !== "upgrade") {
       this.creep.memory.task = "upgrade";
       this.creep.say("⚡ upgrade");
     }
@@ -48,19 +48,22 @@ module.exports = class creep {
   }
 
   repair(forceTarget) {
-    if (this.creep.memory.task !== "repair") {
-      this.creep.memory.task = "repair";
-      this.creep.say("🛠️ repair");
-    }
-
     let target =
       forceTarget ||
       this.creep.room.find(FIND_STRUCTURES, {
-        filter: (object) => object.hits < object.hitsMax,
+        filter: (object) =>
+          object.hits < object.hitsMax &&
+          object.structureType === STRUCTURE_RAMPART &&
+          object.hits < 30000,
       });
 
     if (!target || (Array.isArray(target) && target.length === 0)) {
       return "nothing to repair";
+    }
+
+    if (this.creep.memory.task !== "repair") {
+      this.creep.memory.task = "repair";
+      this.creep.say("🛠️ repair");
     }
 
     if (Array.isArray(target) && target.length > 0) {
@@ -74,11 +77,6 @@ module.exports = class creep {
   }
 
   grab(forceTarget, resource = RESOURCE_ENERGY) {
-    if (this.creep.memory.task !== "grab") {
-      this.creep.memory.task = "grab";
-      this.creep.say("🚚 grab");
-    }
-
     const target =
       forceTarget ||
       this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
@@ -95,6 +93,11 @@ module.exports = class creep {
       return "no storage";
     }
 
+    if (this.creep.memory.task !== "grab") {
+      this.creep.memory.task = "grab";
+      this.creep.say("🚚 grab");
+    }
+
     if (this.creep.withdraw(target, resource) == ERR_NOT_IN_RANGE) {
       this.creep.moveTo(target);
     }
@@ -103,18 +106,44 @@ module.exports = class creep {
   drop() {}
 
   store() {
+    const moreImportantTarget = this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: (structure) => {
+        return (
+          (structure.structureType == STRUCTURE_EXTENSION ||
+            structure.structureType == STRUCTURE_SPAWN ) &&
+          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+        );
+      },
+    });
+
+    const target = moreImportantTarget || this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
+      filter: (structure) => {
+        return (
+          (structure.structureType == STRUCTURE_TOWER ||
+            structure.structureType == STRUCTURE_CONTAINER ) &&
+          structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+        );
+      },
+    });
+
+
+    if (!target) return "full storage";
+
     if (this.creep.memory.task !== "store") {
       this.creep.memory.task = "store";
       this.creep.say("📦 Store");
     }
 
+    if (this.creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+      this.creep.moveTo(target);
+    }
+  }
+
+  transfer(filter) {
     const target = this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
       filter: (structure) => {
         return (
-          (structure.structureType == STRUCTURE_EXTENSION ||
-            structure.structureType == STRUCTURE_SPAWN ||
-            structure.structureType == STRUCTURE_TOWER ||
-            structure.structureType == STRUCTURE_CONTAINER) &&
+          structure.structureType == STRUCTURE_TOWER &&
           structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
         );
       },
@@ -122,12 +151,15 @@ module.exports = class creep {
 
     if (!target) return "full storage";
 
+    if (this.creep.memory.task !== "transfer") {
+      this.creep.memory.task = "transfer";
+      this.creep.say("📦 Xfer");
+    }
+
     if (this.creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
       this.creep.moveTo(target);
     }
   }
-
-  transfer() {}
 
   break() {
     if (this.creep.memory.task !== "break") {
@@ -136,6 +168,23 @@ module.exports = class creep {
     }
 
     this.creep.moveTo(Game.flags["Break Flag"]);
+  }
+
+  pickupDroppedResources(resource) {
+    const target = this.creep.pos.findClosestByRange(FIND_DROPPED_RESOURCES, {
+      filter: (drop) => drop.resourceType === resource,
+    });
+
+    if (!target) return "nothing on the ground";
+
+    if (this.creep.memory.task !== "pickupDroppedResources") {
+      this.creep.memory.task = "pickupDroppedResources";
+      this.creep.say("✔️ Pickup");
+    }
+
+    if (this.creep.pickup(target) == ERR_NOT_IN_RANGE) {
+      this.creep.moveTo(target);
+    }
   }
 
   die() {

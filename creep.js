@@ -54,6 +54,10 @@ module.exports = class creep {
       filter: (object) => object.hits < object.hitsMax,
     });
 
+    if (!target || (Array.isArray(target) && target.length === 0)) {
+      return 'nothing to repair'
+    }
+
     if (Array.isArray(target) && target.length > 0) {
       target.sort((a, b) => a.hits / a.hitsMax - b.hits / b.hitsMax); // sort by lowest health percentage;
       target = target[0]

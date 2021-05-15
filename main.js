@@ -1,8 +1,8 @@
 
 const creepHarvester = require('creep.role.harvester')
 const creepBuilder = require('creep.role.builder')
+const creepRepairer = require('creep.role.repairer')
 var roleUpgrader = require('role.upgrader');
-var roleRepairer = require('role.repairer');
 var spawner = require('spawner');
 var garbageCollector = require('garbageCollector');
 const logger = false;
@@ -48,7 +48,8 @@ module.exports.loop = function () {
                 break;
 
             case 'repairer':
-                roleRepairer.run(creep);
+                const CreepRepairer = new creepRepairer(creep)
+                CreepRepairer.run();
                 break;
 
             case 'testDummy':

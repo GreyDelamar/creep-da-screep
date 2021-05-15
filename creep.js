@@ -4,7 +4,7 @@ module.exports = class creep {
     this.creep = creep;
   }
 
-  harvest() {
+  harvest(goFar) {
     if (this.creep.memory.task !== "harvest") {
       this.creep.memory.task = "harvest";
       this.creep.say("⛏️ Harvest");
@@ -12,8 +12,8 @@ module.exports = class creep {
 
     const sources = this.creep.room.find(FIND_SOURCES);
 
-    if (this.creep.harvest(sources[1]) == ERR_NOT_IN_RANGE) {
-      this.creep.moveTo(sources[1]);
+    if (this.creep.harvest(sources[goFar ? 0 : 1]) == ERR_NOT_IN_RANGE) {
+      this.creep.moveTo(sources[goFar ? 0 : 1]);
     }
   }
 
@@ -26,7 +26,7 @@ module.exports = class creep {
     const target =
       forceTarget || this.creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
 
-    if (!target) return 'nothing to build';
+    if (!target) return "nothing to build";
 
     if (this.creep.build(target) == ERR_NOT_IN_RANGE) {
       this.creep.moveTo(target);
@@ -39,7 +39,10 @@ module.exports = class creep {
       this.creep.say("⚡ upgrade");
     }
 
-    if (this.creep.upgradeController(this.creep.room.controller) == ERR_NOT_IN_RANGE) {
+    if (
+      this.creep.upgradeController(this.creep.room.controller) ==
+      ERR_NOT_IN_RANGE
+    ) {
       this.creep.moveTo(this.creep.room.controller);
     }
   }
@@ -50,17 +53,19 @@ module.exports = class creep {
       this.creep.say("🛠️ repair");
     }
 
-    let target = forceTarget || this.creep.room.find(FIND_STRUCTURES, {
-      filter: (object) => object.hits < object.hitsMax,
-    });
+    let target =
+      forceTarget ||
+      this.creep.room.find(FIND_STRUCTURES, {
+        filter: (object) => object.hits < object.hitsMax,
+      });
 
     if (!target || (Array.isArray(target) && target.length === 0)) {
-      return 'nothing to repair'
+      return "nothing to repair";
     }
 
     if (Array.isArray(target) && target.length > 0) {
       target.sort((a, b) => a.hits / a.hitsMax - b.hits / b.hitsMax); // sort by lowest health percentage;
-      target = target[0]
+      target = target[0];
     }
 
     if (this.creep.repair(target) == ERR_NOT_IN_RANGE) {
@@ -74,22 +79,24 @@ module.exports = class creep {
       this.creep.say("🚚 grab");
     }
 
-    const target = forceTarget || this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
-      filter: (structure) => {
-        return (
-          (structure.structureType == STRUCTURE_CONTAINER) &&
-          structure.store.getCapacity(resource) > 0
-        );
-      },
-    });
+    const target =
+      forceTarget ||
+      this.creep.pos.findClosestByRange(FIND_STRUCTURES, {
+        filter: (structure) => {
+          return (
+            structure.structureType == STRUCTURE_CONTAINER &&
+            structure.store.getCapacity(resource) > 0
+          );
+        },
+      });
 
     if (!target) {
-      this.harvest()
-      return 'no storage'
+      this.harvest();
+      return "no storage";
     }
 
-    if(this.creep.withdraw(target, resource) == ERR_NOT_IN_RANGE) {
-      this.creep.moveTo(target)
+    if (this.creep.withdraw(target, resource) == ERR_NOT_IN_RANGE) {
+      this.creep.moveTo(target);
     }
   }
 
@@ -113,7 +120,7 @@ module.exports = class creep {
       },
     });
 
-    if (!target) return 'full storage'
+    if (!target) return "full storage";
 
     if (this.creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
       this.creep.moveTo(target);
@@ -128,11 +135,10 @@ module.exports = class creep {
       this.creep.say("🕒 break");
     }
 
-
     this.creep.moveTo(Game.flags["Break Flag"]);
   }
 
   die() {
     this.creep.suicide();
   }
-}
+};

@@ -10,15 +10,19 @@ module.exports.loop = function () {
   garbageCollector.run();
   spawner.run(logger);
 
-  var tower = Game.spawns['MainSpawn'].room.find(FIND_MY_STRUCTURES, {
-    filter: { structureType: STRUCTURE_TOWER }
+  var tower = Game.spawns["MainSpawn"].room.find(FIND_MY_STRUCTURES, {
+    filter: (d) => d.structureType === STRUCTURE_TOWER,
   })[0];
 
   if (tower) {
     var closestDamagedStructure = tower.pos.findClosestByRange(
       FIND_STRUCTURES,
       {
-        filter: (structure) => structure.hits < structure.hitsMax && structure.hits < 30000,
+        filter: (structure) =>
+          structure.hits < structure.hitsMax &&
+          (structure.hits < 54000 ||
+            (structure.structureType === STRUCTURE_CONTAINER &&
+              structure.hits < 180000)),
       }
     );
     if (closestDamagedStructure) {

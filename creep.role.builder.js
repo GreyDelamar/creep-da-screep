@@ -7,14 +7,17 @@ module.exports = class RoleBuilder extends Creep {
 
   run() {
     if (!this.creep.memory.isFull) {
-      if (this.grab() === "no storage") {
-        this.break();
-      }
+      const grab = this.grab();
 
       if (
         this.creep.store.getCapacity() === this.creep.store.getUsedCapacity()
       ) {
         this.creep.memory.isFull = true;
+        return;
+      }
+
+      if (grab === "no storage") {
+        this.break();
       }
     } else {
       if (this.build() === "nothing to build") {

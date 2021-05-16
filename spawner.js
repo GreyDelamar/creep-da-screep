@@ -14,21 +14,16 @@ var spawner = {
 
     // console.log(typeof counts.harvester.count, counts.upgrader.count < 1);
 
-    if (counts.harvester.count < 3) {
+    if (counts.harvester.count < 2) {
       spawner.createCreep("harvester", [
         WORK,
         WORK,
         WORK,
-        CARRY,
-        CARRY,
-        MOVE,
-        MOVE,
-        MOVE,
-      ]);
-    } else if (counts.testDummy.count < 0) {
-      spawner.createCreep("testDummy", [
         WORK,
         CARRY,
+        CARRY,
+        MOVE,
+        MOVE,
         MOVE,
       ]);
     } else if (counts.upgrader.count < 2) {
@@ -36,18 +31,6 @@ var spawner = {
         WORK,
         WORK,
         WORK,
-        CARRY,
-        CARRY,
-        MOVE,
-        MOVE,
-        MOVE,
-      ]);
-    }
-    if (counts.repairer.count < 1) {
-      spawner.createCreep("repairer", [
-        WORK,
-        WORK,
-        CARRY,
         CARRY,
         CARRY,
         MOVE,
@@ -65,6 +48,19 @@ var spawner = {
         MOVE,
         MOVE,
       ]);
+    } else if (counts.repairer.count < 0) {
+      spawner.createCreep("repairer", [
+        WORK,
+        WORK,
+        CARRY,
+        CARRY,
+        CARRY,
+        MOVE,
+        MOVE,
+        MOVE,
+      ]);
+    } else if (counts.testDummy.count < 0) {
+      spawner.createCreep("testDummy", [WORK, CARRY, MOVE]);
     }
   },
   createCreep(role, bodyParts) {

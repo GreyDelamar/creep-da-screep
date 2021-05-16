@@ -15,7 +15,9 @@ module.exports = class RoleUpgrader extends Creep {
         this.creep.memory.isFull = true;
       }
     } else {
-      this.upgrade();
+      if (this.transfer(STRUCTURE_TOWER) === "full storage") {
+        this.upgrade();
+      }
 
       if (this.creep.store.getUsedCapacity() === 0) {
         this.creep.memory.isFull = false;

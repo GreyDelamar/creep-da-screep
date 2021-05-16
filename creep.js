@@ -52,9 +52,9 @@ module.exports = class creep {
       forceTarget ||
       this.creep.room.find(FIND_STRUCTURES, {
         filter: (object) =>
-          object.hits < object.hitsMax &&
-          object.structureType === STRUCTURE_RAMPART &&
-          object.hits < 30000,
+          (object.structureType === STRUCTURE_RAMPART && object.hits < 30000) ||
+          (object.structureType === STRUCTURE_CONTAINER &&
+            object.hits < 240000),
       });
 
     if (!target || (Array.isArray(target) && target.length === 0)) {

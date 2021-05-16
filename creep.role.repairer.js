@@ -7,20 +7,24 @@ module.exports = class RoleRepairer extends Creep {
 
   run() {
     if (!this.creep.memory.isFull) {
-      if (this.grab() === "no storage") {
-        this.break();
-      }
+      const grab = this.grab();
 
       if (
         this.creep.store.getCapacity() === this.creep.store.getUsedCapacity()
       ) {
         this.creep.memory.isFull = true;
+        return;
+      }
+
+      if (grab === "no storage") {
+        this.break();
       }
     } else {
-      if (this.transfer(STRUCTURE_TOWER) === "full storage") {
-        if (this.repair() === "nothing to repair") {
-          this.upgrade();
-        }
+      if (this.repair() === "nothing to repair") {
+        this.break();
+        // if (this.transfer(STRUCTURE_TOWER) === "full storage") {
+        //   this.upgrade();
+        // }
       }
 
       if (this.creep.store.getUsedCapacity() === 0) {

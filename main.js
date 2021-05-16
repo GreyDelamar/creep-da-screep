@@ -20,7 +20,7 @@ module.exports.loop = function () {
       {
         filter: (structure) =>
           structure.hits < structure.hitsMax &&
-          (structure.hits < 54000 ||
+          (structure.hits < 60000 ||
             (structure.structureType === STRUCTURE_CONTAINER &&
               structure.hits < 180000)),
       }

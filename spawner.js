@@ -1,7 +1,3 @@
-// module.exports = {
-// Game.spawns['MainSpawn'].spawnCreep( [WORK, CARRY, MOVE], 'Builder1', { memory: { role: "" }} );
-// };
-
 var spawner = {
   /** @param {Creep} creep **/
   run: function (logCounts) {
@@ -9,7 +5,7 @@ var spawner = {
 
     if (logCounts) console.log(JSON.stringify(counts, null, 2));
     // console.log(
-    //   spawner.bodyCost([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE])
+    //   spawner.bodyCost([WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE])
     // );
 
     // console.log(typeof counts.harvester.count, counts.upgrader.count < 1);
@@ -26,8 +22,9 @@ var spawner = {
         MOVE,
         MOVE,
       ]);
-    } else if (counts.upgrader.count < 2) {
+    } else if (counts.upgrader.count < 3) {
       spawner.createCreep("upgrader", [
+        WORK,
         WORK,
         WORK,
         WORK,
@@ -83,7 +80,7 @@ var spawner = {
 
       let countTarget = counts[creep.memory.role];
 
-      if (countTarget && creep.ticksToLive > 30) countTarget.count++;
+      if (countTarget && creep.ticksToLive > 60) countTarget.count++;
     }
 
     return counts;
